@@ -2,84 +2,138 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="style.css">
-    <title> Weather App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A modern, real-time weather app. Search any city to get current conditions, humidity, precipitation, wind speed, and a 4-day forecast." />
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>WeatherNow — Real-Time Weather</title>
 </head>
 
 <body>
+  <main class="app-wrapper" aria-label="Weather Application">
 
-    <div class="container">
-        <div class="left-info">
-            <div class="pic-gradient"></div>
-            <div class="today-info">
-                <h2>Friday</h2>
-                <span>28 July 2023</span>
-                <div>
-                    <i class='bx bx-current-location'></i>
-                    <span>Paris, FR</span>
-                </div>
-            </div>
-            <div class="today-weather">
-                <i class='bx bx-sun'></i>
-                <h1 class="weather-temp">
-                    25°C
-                </h1>
-                <h3>Sunny</h3>
-            </div>
+    <!-- Search Bar -->
+    <form class="search-bar" id="search-form" role="search" aria-label="Search for a city">
+      <i class='bx bx-search search-icon' aria-hidden="true"></i>
+      <input
+        type="search"
+        id="city-input"
+        class="search-input"
+        placeholder="Search city…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="City name"
+      />
+      <button type="submit" class="search-btn" id="search-submit-btn" aria-label="Search">
+        <i class='bx bx-right-arrow-alt' aria-hidden="true"></i>
+      </button>
+    </form>
+
+    <!-- Main Card -->
+    <div class="card" id="weather-card">
+
+      <!-- LEFT: Current weather panel (canvas weather animation fills this) -->
+      <section class="card-left" id="card-left" aria-label="Current weather">
+        <!-- Live weather canvas — sits behind everything else -->
+        <canvas id="weather-canvas" aria-hidden="true"></canvas>
+        <div class="card-bg-overlay" aria-hidden="true"></div>
+
+        <div class="today-info">
+          <p class="today-day" id="today-day">—</p>
+          <p class="today-date" id="today-date">—</p>
+          <p class="today-location">
+            <i class='bx bxs-map' aria-hidden="true"></i>
+            <span id="today-location">—</span>
+          </p>
         </div>
 
-        <div class="right-info">
-            <div class="day-info">
-                <div>
-                    <span class="title">PRECIPITATION</span>
-                    <span class="value">4 %</span>
-                </div>
-                <div>
-                    <span class="title">HUMIDITY</span>
-                    <span class="value">34 %</span>
-                </div>
-                <div>
-                    <span class="title">WIND SPEED</span>
-                    <span class="value">6 km/h</span>
-                </div>
-            </div>
-
-            <ul class="days-list">
-                <li>
-                    <i class='bx bx-cloud'></i>
-                    <span>Sat</span>
-                    <span class="day-temp">23°C</span>
-                </li>
-                <li>
-                    <i class='bx bx-sun'></i>
-                    <span>Sun</span>
-                    <span class="day-temp">28°C</span>
-                </li>
-                <li>
-                    <i class='bx bx-cloud-rain'></i>
-                    <span>Mon</span>
-                    <span class="day-temp">02°C</span>
-                </li>
-                <li>
-                    <i class='bx bx-cloud-drizzle'></i>
-                    <span>Tue</span>
-                    <span class="day-temp">14°C</span>
-                </li>
-            </ul>
-
-            <div class="btn-container">
-                <button class="loc-button">Search Location</button>
-            </div>
-
+        <div class="today-weather">
+          <i class='bx bx-sun weather-icon' id="main-weather-icon" aria-hidden="true"></i>
+          <p class="weather-temp" id="weather-temp">—</p>
+          <p class="weather-desc" id="weather-desc">—</p>
         </div>
+      </section>
+
+      <!-- RIGHT: Details panel -->
+      <section class="card-right" aria-label="Weather details">
+
+        <!-- Unit toggle -->
+        <div class="unit-toggle" role="group" aria-label="Temperature unit">
+          <button class="unit-btn active" id="btn-celsius" data-unit="C" aria-pressed="true">°C</button>
+          <button class="unit-btn" id="btn-fahrenheit" data-unit="F" aria-pressed="false">°F</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="stats-grid" aria-label="Today's statistics">
+          <div class="stat-item">
+            <i class='bx bxs-droplet' aria-hidden="true"></i>
+            <div>
+              <span class="stat-label">Precipitation</span>
+              <span class="stat-value" id="stat-precip">—</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class='bx bx-water' aria-hidden="true"></i>
+            <div>
+              <span class="stat-label">Humidity</span>
+              <span class="stat-value" id="stat-humidity">—</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class='bx bx-wind' aria-hidden="true"></i>
+            <div>
+              <span class="stat-label">Wind Speed</span>
+              <span class="stat-value" id="stat-wind">—</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class='bx bx-thermometer' aria-hidden="true"></i>
+            <div>
+              <span class="stat-label">Feels Like</span>
+              <span class="stat-value" id="stat-feels">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forecast -->
+        <h2 class="forecast-title">4-Day Forecast</h2>
+        <ul class="days-list" id="days-list" aria-label="4-day weather forecast">
+          <!-- Populated by JS -->
+        </ul>
+
+        <!-- Error / Loading notice -->
+        <div class="notice" id="notice" aria-live="polite" aria-atomic="true" hidden>
+          <i class='bx bx-error-circle' aria-hidden="true"></i>
+          <span id="notice-text"></span>
+        </div>
+
+      </section>
 
     </div>
 
-    <script src="index.js"></script>
+    <!-- Proactive Weather Warnings -->
+    <section
+      class="warnings-container"
+      id="warnings-container"
+      aria-live="polite"
+      aria-label="Weather health and safety warnings"
+      hidden
+    >
+      <!-- Populated by JS -->
+    </section>
 
+    <!-- Loading bar (slim top-bar, non-blocking) -->
+    <div class="loading-overlay" id="loading-overlay" aria-hidden="true" hidden role="progressbar" aria-label="Loading weather data"></div>
+
+  </main>
+
+  <script src="weather-bg.js"></script>
+  <script src="index.js"></script>
 </body>
 
 </html>
